@@ -1,0 +1,10 @@
+@font-face {
+  font-family: '思源加粗';
+  font-display: swap;
+  src: url('//at.alicdn.com/t/webfont_2dl34uo21kj.eot'); /* IE9*/
+  src: url('//at.alicdn.com/t/webfont_2dl34uo21kj.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('//at.alicdn.com/t/webfont_2dl34uo21kj.woff2') format('woff2'),
+  url('//at.alicdn.com/t/webfont_2dl34uo21kj.woff') format('woff'), /* chrome、firefox */
+  url('//at.alicdn.com/t/webfont_2dl34uo21kj.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  url('//at.alicdn.com/t/webfont_2dl34uo21kj.svg#思源黑体-正粗') format('svg'); /* iOS 4.1- */
+}

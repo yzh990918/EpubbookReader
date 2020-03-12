@@ -1,0 +1,10 @@
+@font-face {
+  font-family: '普惠体细';
+  font-display: swap;
+  src: url('//at.alicdn.com/t/webfont_jkidf199sid.eot'); /* IE9*/
+  src: url('//at.alicdn.com/t/webfont_jkidf199sid.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('//at.alicdn.com/t/webfont_jkidf199sid.woff2') format('woff2'),
+  url('//at.alicdn.com/t/webfont_jkidf199sid.woff') format('woff'), /* chrome、firefox */
+  url('//at.alicdn.com/t/webfont_jkidf199sid.ttf') format('truetype'), /* chrome、firefox、opera、Safari, Android, iOS 4.2+*/
+  url('//at.alicdn.com/t/webfont_jkidf199sid.svg#AlibabaPuHuiTiL') format('svg'); /* iOS 4.1- */
+}
