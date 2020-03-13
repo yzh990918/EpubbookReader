@@ -7,8 +7,20 @@ const mutations = {
   [types.SET_MENU](state, flag) {
     state.menuVisable = flag;
   },
-  [types.SET_MENUNUM](state, num) {
-    state.settingMenu = num;
+  [types.SET_SELECTNUM](state, num) {
+    state.selectedNum = num;
+  },
+  [types.SET_CURRENTBOOK](state, book) {
+    state.CurrentBook = book;
+  },
+  [types.SET_DEFAULTFONT](state, fontsize) {
+    state.defaultFontSize = fontsize;
+  },
+  [types.SET_DEFAULTFONTFAMILY](state, fontfamily) {
+    state.defaultFontFamily = fontfamily;
+  },
+  [types.FAMILY_VISIBLE](state, visible) {
+    state.fontFamilyVisible = visible;
   }
 };
 export default mutations;

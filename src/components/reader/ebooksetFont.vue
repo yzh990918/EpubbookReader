@@ -1,40 +1,35 @@
 <template>
   <div class="SettingFont">
-    <transition name="slide-up">
-      <div class="setting-wrapper" v-show="menuVisable && settingMenu === 2">
-        <div class="setting-font-size" v-if="showTag === 0">
-          <div
-            class="preview"
-            :style="{ fontSize: fontSizeList[0].fontSize + 'px' }"
-          >
-            A
+    <transition name="slideUp">
+      <div class="setting-wrapper" v-show="menuVisable && selectedNum === 3">
+        <div class="setting-font-size">
+          <div class="preview">
+            A-
           </div>
-          <div class="select">
-            <div
-              class="select-wrapper"
-              v-for="(item, index) in fontSizeList"
-              :key="index"
-              @click="setFontSize(item.fontSize)"
-            >
-              <div class="line"></div>
-              <div class="point-wrapper">
-                <div class="point" v-show="defaultFontSize === item.fontSize">
-                  <div class="small-point"></div>
-                </div>
-              </div>
-              <div class="line"></div>
-            </div>
+          <div class="slide-wrapper">
+            <Slider
+              :min="12"
+              :max="24"
+              bar-height="4px"
+              active-color="#5f5f56"
+              button-size="15"
+              v-model="value"
+              inactive-color="#d4d4cf"
+              @change="onChange"
+            ></Slider>
           </div>
-          <div
-            class="preview"
-            :style="{
-              fontSize: fontSizeList[fontSizeList.length - 1].fontSize + 'px'
-            }"
-          >
-            A
+          <div class="preview">
+            A+
           </div>
         </div>
-        <div class="setting-font-family" @click.stop="showFontFamilySetting">
+        <div class="settingfamily">
+          <div class="text" @click="showPoup">{{ defaultFontFamily }}</div>
+          <div class="icon">
+            <span class="icon-forward"></span>
+          </div>
+        </div>
+
+        <!-- <div class="setting-font-family" @click.stop="showFontFamilySetting">
           <div class="setting-font-family-text-wrapper">
             <span class="setting-font-family-text">{{
               defaultFontFamily
@@ -43,95 +38,182 @@
           <div class="setting-font-family-icon-wrapper">
             <span class="icon-forward"></span>
           </div>
-        </div>
+        </div> -->
       </div>
     </transition>
+    <div class="propup-wrapper">
+      <Popup v-model="flag" position="bottom">
+        <cell-group>
+          <div class="title">
+            <div class="icon-wrapper">
+              <van-icon
+                name="https://image.yangxiansheng.top/img/规则 (2).png?imagelist"
+              />
+            </div>
+            <cell size="large" title="部分字体由[阿里巴巴iconfont]提供"></cell>
+          </div>
+          <div
+            class="item"
+            v-for="(item, index) in fontFamilylist"
+            :key="index"
+          >
+            <cell size="large" :value="item.font"></cell>
+            <div class="button-wrapper">
+              <Button
+                ref="button"
+                :disabled="isselected(item.font)"
+                @click="setfamily(item.font)"
+                color="#455a66"
+                plain
+                >{{ isselected(item.font) ? "当前" : "使用" }}</Button
+              >
+            </div>
+          </div>
+        </cell-group>
+      </Popup>
+    </div>
   </div>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { bookmixin } from "../../mixin/index";
+import { Slider, Popup, Cell, CellGroup, Button } from "vant";
+import { saveFontSize, saveFontFamily, getFontSize } from "../../mixin/storage";
 export default {
+  mixins: [bookmixin],
   name: "",
   props: [""],
+
   data() {
-    return {};
+    return {
+      flag: false,
+      value: 0
+    };
   },
 
-  components: {},
   created() {},
+  components: { Slider, Popup, Cell, CellGroup, Button },
 
-  computed: {
-    ...mapGetters(["settingMenu", "menuVisable"])
-  },
+  computed: {},
 
   beforeMount() {},
 
-  mounted() {},
+  mounted() {
+    this.fontsize();
+  },
 
-  methods: {},
+  methods: {
+    fontsize() {
+      if (getFontSize(this.fileName) === 16) {
+        this.value = 16;
+        return 16;
+      } else {
+        return getFontSize(this.fileName);
+      }
+    },
+    setfamily(font) {
+      // 设置 不同的字体 关键函数 但还需要注册字体文件 使用hook钩子
+      this.setfontfamily(font);
+      if (this.defaultFontFamily === "Default") {
+        this.CurrentBook.rendition.themes.font("Times New Roman");
+        saveFontFamily(this.fileName, "Default");
+      } else {
+        this.CurrentBook.rendition.themes.font(font);
+        saveFontFamily(this.fileName, font);
+      }
+    },
+    isselected(font) {
+      if (this.defaultFontFamily === font) {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    showPoup() {
+      this.flag = true;
+      this.setfamilyVisible(true);
+    },
+    showFontFamilySetting() {},
+    setFontSize() {},
+    onChange(value) {
+      this.CurrentBook.rendition.themes.fontSize(value);
+      saveFontSize(this.fileName, value);
+    }
+  },
 
   watch: {}
 };
 </script>
 <style lang="stylus" scoped>
-@import '../../assets/styles/global'
+@import '../../assets/styles/global.styl'
 .setting-wrapper
    position: absolute;
-   bottom: 1.8rem;
+   display flex
+   flex-direction column
    left: 0;
-   z-index: 101;
+   z-index: 201;
    width: 100%;
-   height: px2rem(60);
-   background: white;
+   margin-top -4.2rem
+   height: 2.4rem;
+   background:  #F5EACC;
    box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, 0.15);
-   .setting-font-size
-     display: flex;
-     height: 100%;
-     .preview
-       flex: 0 0 px2rem(40);
-       center();
-     .select
-       display: flex;
-       flex: 1;
-       .select-wrapper
-         flex: 1;
-         display: flex;
-         align-items: center;
-         &:first-child
-           .line
-             &:first-child
-               border-top: none;
-         &:last-child
-           .line
-             &:last-child
-               border-top: none;
-         .line
-           flex: 1;
-           height: 0;
-           border-top: px2rem(1) solid #ccc;
-         .point-wrapper
-           position: relative;
-           flex: 0 0 0;
-           width: 0;
-           height: px2rem(7);
-           border-left: px2rem(1) solid #ccc;
-           .point
-             position: absolute;
-             top: px2rem(-8);
-             left: px2rem(-10);
-             width: px2rem(20);
-             height: px2rem(20);
-             border-radius: 50%;
-             background: white;
-             border: px2rem(1) solid #ccc;
-             box-shadow: 0 px2rem(4) px2rem(4) rgba(0, 0, 0, 0.15);
-             center()
-             .small-point
-               width: px2rem(5);
-               height: px2rem(5);
-               background: black;
-               border-radius: 50%;
+   &.slideUp-enter,&.slideUp-leave-active
+    transform translate3d(0,100%,0)
+    opacity 0
+  &.slideUp-enter-active,&.slideUp-leave-active
+    opacity 1
+    transition all .2s linear
+  .setting-font-size
+    display flex
+    flex 2
+    width 100%
+    center()
+    .slide-wrapper
+      flex 1
+    .preview
+      flex 0 0 15%
+      color #5f5f56
+      font-size 18px
+      center()
+  .settingfamily
+    display flex
+    margin-top -4px
+    width 100%
+    flex 1
+    center()
+    .text
+      font-size 0.37rem
+      ellipsis()
+    .icon
+      font-size 0.37rem
+      center()
+.propup-wrapper
+  font-size 16px
+  padding 15px
+  .title
+    center()
+    margin-left 20px
+    font-size 10px
+    height 40px
+    line-height 18px
+    .icon-wrapper
+      center()
+  .item
+    height 50px
+    line-height 20px
+    margin-left 20px
+    border-bottom 1px solid rgba(255,255,255,.3)
+    position relative
+    display flex
+    .button-wrapper
+      justify-content flex-end
+      display flex
+      align-items center
+
+
+
+
+
   //  .setting-theme
   //    height: 100%;
   //    display: flex;
@@ -192,4 +274,53 @@ export default {
   //      color: #333;
   //      font-size: px2rem(12);
   //      text-align: center;
+</style>
+
+<style>
+.van-slider__button {
+  background: #5f5f56;
+}
+.van-popup {
+  max-height: 350px;
+  overflow: scroll;
+}
+.van-popup,
+.van-cell-group,
+.van-cell {
+  background: #f5eacc !important;
+}
+.van-icon {
+  color: antiquewhite;
+  font-size: 11px;
+}
+.van-cell__title {
+  margin-left: 8px !important;
+  font-size: 13px !important;
+  line-height: 20px;
+}
+.van-cell__value,
+.van-cell__value--alone {
+  height: 50px !important;
+  display: flex;
+  align-items: center;
+  color: #455a64;
+  font-size: 13px;
+  position: relative;
+}
+.van-button {
+  border-radius: 10px;
+  background-color: #f5eacc;
+  outline: none;
+  font-size: 13px;
+  display: flex;
+  justify-items: center;
+  width: 60px;
+  height: 23px;
+  margin-right: 20px;
+}
+.van-button span {
+  margin-top: -10px;
+  white-space: nowrap;
+  display: inline-block;
+}
 </style>
