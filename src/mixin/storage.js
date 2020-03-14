@@ -41,13 +41,13 @@ export function getBookObject(fileName, key) {
 }
 
 // 业务代码
-export function getLocale() {
-  return getLocalStorage("locale");
-}
+// export function getLocale() {
+//   return getLocalStorage("locale");
+// }
 
-export function saveLocale(locale) {
-  return setLoaclStorage("locale", locale);
-}
+// export function saveLocale(locale) {
+//   return setLoaclStorage("locale", locale);
+// }
 
 export function getLocation(fileName) {
   return getBookObject(fileName, "location");
@@ -57,13 +57,13 @@ export function saveLocation(fileName, location) {
   setBookObject(fileName, "location", location);
 }
 
-export function getBookmark(fileName) {
-  return getBookObject(fileName, "bookmark");
-}
+// export function getBookmark(fileName) {
+//   return getBookObject(fileName, "bookmark");
+// }
 
-export function saveBookmark(fileName, bookmark) {
-  setBookObject(fileName, "bookmark", bookmark);
-}
+// export function saveBookmark(fileName, bookmark) {
+//   setBookObject(fileName, "bookmark", bookmark);
+// }
 
 export function getReadTime(fileName) {
   return getBookObject(fileName, "time");

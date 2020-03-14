@@ -21,6 +21,12 @@ const mutations = {
   },
   [types.FAMILY_VISIBLE](state, visible) {
     state.fontFamilyVisible = visible;
+  },
+  [types.SET_THEME](state, theme) {
+    state.defaultTheme = theme;
+  },
+  [types.SET_BOOKFIN](state, flag) {
+    state.bookAvailable = flag;
   }
 };
 export default mutations;

@@ -21,12 +21,16 @@
       </div>
     </transition>
     <settingFont></settingFont>
+    <settingBg></settingBg>
+    <settingProgress></settingProgress>
   </div>
 </template>
 
 <script>
 import { bookmixin } from "../../mixin/index";
 import settingFont from "../reader/ebooksetFont";
+import settingBg from "../reader/ebooksetBg";
+import settingProgress from "../reader/ebooksetPg";
 export default {
   mixins: [bookmixin],
   name: "",
@@ -39,7 +43,7 @@ export default {
     };
   },
 
-  components: { settingFont },
+  components: { settingFont, settingBg, settingProgress },
   created() {},
 
   computed: {

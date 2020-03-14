@@ -5,6 +5,8 @@ const state = {
   CurrentBook: null,
   defaultFontSize: 16,
   defaultFontFamily: "Default",
-  fontFamilyVisible: false
+  fontFamilyVisible: false,
+  defaultTheme: "Default",
+  bookAvailable: false
 };
 export default state;

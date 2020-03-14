@@ -10,9 +10,12 @@ import {
   getFontFamily,
   getFontSize,
   saveFontFamily,
-  saveFontSize
+  saveFontSize,
+  getTheme,
+  saveTheme
 } from "../../mixin/storage";
 import Epub from "epubjs";
+import { themeList, addLink, removeAllCss } from "../../mixin/book";
 global.ePub = Epub;
 export default {
   mixins: [bookmixin],
@@ -70,8 +73,9 @@ export default {
       // 没有就写入当前默认的值
       if (!fontSize) {
         fontSize = 16;
-        saveFontSize(this.fileName, fontSize);
-        this.redition.themes.fontSize(fontSize);
+        saveFontSize(this.fileName, 16);
+        this.setfonytsize(fontSize);
+        this.this.redition.themes.fontSize(16);
       }
       // 读取到就更改字体大小
       this.redition.themes.fontSize(fontSize);
@@ -81,30 +85,74 @@ export default {
       let fontfamily = getFontFamily(this.fileName);
       if (!fontfamily) {
         saveFontFamily(this.fileName, "Default");
-        this.redition.themes.font(fontfamily);
+        this.setfontfamily("Default");
+        this.redition.themes.font("Times New Roman");
       }
       this.redition.themes.font(fontfamily);
       this.setfontfamily(fontfamily);
     },
-
+    // 初始化主题文件
+    initTheme() {
+      let themelist = themeList();
+      let Currenttheme = getTheme(this.fileName);
+      if (!Currenttheme) {
+        saveTheme(this.fileName, "Default");
+        this.settheme("Default");
+        this.redition.themes.select("Default");
+      }
+      // 注册主题属性
+      themelist.forEach(theme => {
+        this.redition.themes.register(theme.name, theme.style);
+      });
+      this.settheme(Currenttheme);
+      this.redition.themes.select(Currenttheme);
+    },
+    // 设置全局样式
+    initGlobaltheme() {
+      removeAllCss();
+      switch (this.defaultTheme) {
+        case "Default":
+          addLink(`https://store.yangxiansheng.top/theme/theme_default.css`);
+          break;
+        case "Eye":
+          addLink(`https://store.yangxiansheng.top/theme/theme_eye.css`);
+          break;
+        case "Gold":
+          addLink(`https://store.yangxiansheng.top/theme/theme_gold.css`);
+          break;
+        case "Night":
+          addLink(`https://store.yangxiansheng.top/theme/theme_night.css`);
+          break;
+        default:
+          this.saveTheme(this.defaultTheme);
+          addLink(`https://store.yangxiansheng.top/theme/theme_default.css`);
+          break;
+      }
+    },
     initEpub() {
       this.setFileName(this.$route.params.fileName);
       const url = "https://store.yangxiansheng.top/epub/";
       let BookUrl = url + `${this.$route.params.fileName}.epub`;
       this.book = new Epub(BookUrl);
       this.Book = this.book;
-      // this.setBook(this.book);
-      // 渲染
+
+      // 渲染图书文件
       this.redition = this.book.renderTo("read", {
         width: innerWidth,
         height: innerHeight,
         method: "default"
       });
+
+      // 加载图书 显示到屏幕
       this.redition.display().then(() => {
-        // 加载
+        // 初始化storage
         this.loadingFontsize();
         this.loadingFontfamily();
+        this.initTheme();
+        this.initGlobaltheme();
       });
+
+      // 定义翻页动作
       // 获取到手指滑动的时间 和偏移
       this.redition.on("touchstart", event => {
         // console.log(event);
@@ -132,6 +180,19 @@ export default {
         // event.stopImmediatePropagation();
       });
       this.setBook(this.Book);
+
+      // 分出epub文件的页数  如果当前页的宽度比375标准尺寸大 一页的文字就大于750 该分页算法比较坑 得不到精确分页
+      this.book.ready
+        .then(() => {
+          return this.book.locations.generate(
+            750 * (window.innerWidth / 375) * (getFontSize(this.fileName) / 16)
+          );
+        })
+        .then(() => {
+          this.setProgressFinished(true);
+        });
+
+      //注册字体文件
       this.redition.hooks.content.register(contents => {
         // 异步加载全部字体文件
         Promise.all([
@@ -160,7 +221,11 @@ export default {
             "https://store.yangxiansheng.top/font/tangerine.css"
           )
         ]).then(() => {
-          console.log("加载完成");
+          if (!getFontFamily(this.fileName)) {
+            saveFontFamily(this.fileName, "Default");
+            this.redition.themes.font("Times New Roman");
+            this.setfontfamily("Default");
+          }
         });
       });
     }

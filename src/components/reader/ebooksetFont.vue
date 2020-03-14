@@ -106,10 +106,9 @@ export default {
     fontsize() {
       if (getFontSize(this.fileName) === 16) {
         this.value = 16;
-        return 16;
-      } else {
-        return getFontSize(this.fileName);
+        return this;
       }
+      this.value = getFontSize(this.fileName);
     },
     setfamily(font) {
       // 设置 不同的字体 关键函数 但还需要注册字体文件 使用hook钩子
@@ -147,133 +146,68 @@ export default {
 <style lang="stylus" scoped>
 @import '../../assets/styles/global.styl'
 .setting-wrapper
-   position: absolute;
-   display flex
-   flex-direction column
-   left: 0;
-   z-index: 201;
-   width: 100%;
-   margin-top -4.2rem
-   height: 2.4rem;
-   background:  #F5EACC;
-   box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, 0.15);
-   &.slideUp-enter,&.slideUp-leave-active
-    transform translate3d(0,100%,0)
-    opacity 0
-  &.slideUp-enter-active,&.slideUp-leave-active
-    opacity 1
-    transition all .2s linear
-  .setting-font-size
-    display flex
-    flex 2
-    width 100%
+  position: absolute
+  display: flex
+  flex-direction: column
+  left: 0
+  z-index: 201
+  width: 100%
+  margin-top: -4.2rem
+  height: 2.4rem
+  background: #F5EACC
+  box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, 0.15)
+  &.slideUp-enter, &.slideUp-leave-active
+    transform: translate3d(0, 100%, 0)
+    opacity: 0
+&.slideUp-enter-active, &.slideUp-leave-active
+  opacity: 1
+  transition: all 0.2s linear
+.setting-font-size
+  display: flex
+  flex: 2
+  width: 100%
+  center()
+  .slide-wrapper
+    flex: 1
+  .preview
+    flex: 0 0 15%
+    color: #5f5f56
+    font-size: 18px
     center()
-    .slide-wrapper
-      flex 1
-    .preview
-      flex 0 0 15%
-      color #5f5f56
-      font-size 18px
-      center()
-  .settingfamily
-    display flex
-    margin-top -4px
-    width 100%
-    flex 1
+.settingfamily
+  display: flex
+  margin-top: -4px
+  width: 100%
+  flex: 1
+  center()
+  .text
+    font-size: 0.37rem
+    ellipsis()
+  .icon
+    font-size: 0.37rem
     center()
-    .text
-      font-size 0.37rem
-      ellipsis()
-    .icon
-      font-size 0.37rem
-      center()
 .propup-wrapper
-  font-size 16px
-  padding 15px
+  font-size: 16px
+  padding: 15px
   .title
     center()
-    margin-left 20px
-    font-size 10px
-    height 40px
-    line-height 18px
+    margin-left: 20px
+    font-size: 10px
+    height: 40px
+    line-height: 18px
     .icon-wrapper
       center()
   .item
-    height 50px
-    line-height 20px
-    margin-left 20px
-    border-bottom 1px solid rgba(255,255,255,.3)
-    position relative
-    display flex
+    height: 50px
+    line-height: 20px
+    margin-left: 20px
+    border-bottom: 1px solid rgba(255, 255, 255, 0.3)
+    position: relative
+    display: flex
     .button-wrapper
-      justify-content flex-end
-      display flex
-      align-items center
-
-
-
-
-
-  //  .setting-theme
-  //    height: 100%;
-  //    display: flex;
-  //    .setting-theme-item
-  //      flex: 1;
-  //      display: flex;
-  //      flex-direction: column;
-  //      padding: px2rem(5);
-  //      box-sizing: border-box;
-  //      .preview
-  //        flex: 1;
-  //        border: px2rem(1) solid #ccc;
-  //        box-sizing: border-box;
-  //        &.no-border
-  //          border: none;
-
-  //      .text
-  //        flex: 0 0 px2rem(20);
-  //        font-size: px2rem(14);
-  //        color: #ccc;
-  //        @include center;
-  //        &.selected
-  //          color: #333;
-
-  //  .setting-progress
-  //    position: relative;
-  //    width: 100%;
-  //    height: 100%;
-  //    .progress-wrapper
-  //      width: 100%;
-  //      height: 100%;
-  //      @include center;
-  //      padding: 0 px2rem(30);
-  //      box-sizing: border-box;
-  //      .progress
-  //        width: 100%;
-  //        -webkit-appearance: none;
-  //        height: px2rem(2);
-  //        background: -webkit-linear-gradient(#999, #999) no-repeat, #ddd;
-  //        background-size: 0 100%;
-  //        &:focus
-  //          outline: none;
-
-  //        &::-webkit-slider-thumb
-  //          -webkit-appearance: none;
-  //          height: px2rem(20);
-  //          width: px2rem(20);
-  //          border-radius: 50%;
-  //          background: white;
-  //          box-shadow: 0 4px 4px 0 rgba(0, 0, 0, 0.15);
-  //          border: px2rem(1) solid #ddd;
-
-  //    .text-wrapper
-  //      position: absolute;
-  //      left: 0;
-  //      bottom: 0;
-  //      width: 100%;
-  //      color: #333;
-  //      font-size: px2rem(12);
-  //      text-align: center;
+      justify-content: flex-end
+      display: flex
+      align-items: center
 </style>
 
 <style>

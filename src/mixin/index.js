@@ -24,7 +24,9 @@ export const bookmixin = {
       "CurrentBook",
       "defaultFontSize",
       "defaultFontFamily",
-      "fontFamilyVisible"
+      "fontFamilyVisible",
+      "defaultTheme",
+      "bookAvailable"
     ])
   },
   methods: {
@@ -35,7 +37,21 @@ export const bookmixin = {
       setBook: "SET_CURRENTBOOK",
       setfonytsize: "SET_DEFAULTFONT",
       setfontfamily: "SET_DEFAULTFONTFAMILY",
-      setfamilyVisible: "FAMILY_VISIBLE"
+      setfamilyVisible: "FAMILY_VISIBLE",
+      settheme: "SET_THEME",
+      setProgressFinished: "SET_BOOKFIN"
     })
+
+    // 设置主题方法注册为mixin 因为多处复用
+    /**
+     * 点击后的逻辑大概这样: 1.设置vuex theme 2.this.redition.themes设置epub主题 3.保存storage
+     * @param {*} theme
+     */
+    // setTheme(theme) {
+    //   this.settheme(theme).then(() => {
+    //     this.switchTheme();
+    //     this.saveTheme(this.fileName, theme);
+    //   });
+    // }
   }
 };
