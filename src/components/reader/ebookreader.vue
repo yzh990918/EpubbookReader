@@ -1,5 +1,14 @@
 <template>
   <div class="ebook-reader">
+    <div
+      class="ebook-reader-mask"
+      @touchmove="move"
+      @touchend="moveEnd"
+      @mousedown.left="onMouseEnter"
+      @mousemove.left="onMouseMove"
+      @mouseup.left="onMouseEnd"
+      @click="onMaskClick"
+    ></div>
     <div id="read"></div>
   </div>
 </template>
@@ -44,6 +53,73 @@ export default {
   },
 
   methods: {
+    // 解决翻页事件bug
+    move(e) {
+      let offsetY = 0;
+      if (this.firstOffsetY) {
+        offsetY = e.changedTouches[0].clientY - this.firstOffsetY;
+        this.setOffsetY(offsetY);
+      } else {
+        this.firstOffsetY = e.changedTouches[0].clientY;
+      }
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    onMouseEnter(e) {
+      this.mouseMove = 1;
+      this.mouseStartTime = e.timeStamp;
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    onMouseMove(e) {
+      if (this.mouseMove === 1) {
+        this.mouseMove = 2;
+      } else if (this.mouseMove === 2) {
+        let offsetY = 0;
+        if (this.firstOffsetY) {
+          offsetY = e.clientY - this.firstOffsetY;
+          this.setOffsetY(offsetY);
+        } else {
+          this.firstOffsetY = e.clientY;
+        }
+      }
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    onMouseEnd(e) {
+      if (this.mouseMove === 2) {
+        this.setOffsetY(0);
+        this.firstOffsetY = 0;
+        this.mouseMove = 3;
+      }
+      this.mouseEndTime = e.timeStamp;
+      const time = this.mouseEndTime - this.mouseStartTime;
+      if (time < 200) {
+        this.mouseMove = 1;
+      }
+      e.preventDefault();
+      e.stopPropagation();
+    },
+    moveEnd() {
+      this.setOffsetY(0);
+      this.firstOffsetY = 0;
+    },
+    onMaskClick(e) {
+      if (this.mouseMove === 2) {
+        console.log("1");
+      } else if (this.mouseMove === 1 || this.mouseMove === 4) {
+        const offsetX = e.offsetX;
+        const width = window.innerWidth;
+        if (offsetX > 0 && offsetX < width * 0.3) {
+          this.prevPgae();
+        } else if (offsetX > 0 && offsetX > width * 0.7) {
+          this.nextPage();
+        } else {
+          this.toggleMenu();
+        }
+      }
+      this.mouseMove = 4;
+    },
     nextPage() {
       if (this.redition) {
         console.log("下一页");
@@ -202,6 +278,8 @@ export default {
         // 获取刚触摸屏幕的位置和时间(ms)
         this.touchStartX = event.changedTouches[0].clientX;
         this.touchStartTime = event.timeStamp;
+        event.preventDefault();
+        event.stopPropagation();
       });
       this.redition.on("touchend", event => {
         // 计算偏移 时差 右往左滑(负数)
@@ -219,8 +297,8 @@ export default {
           this.toggleMenu();
         }
         // 禁止默认方法调用和传播
-        // event.preventDefault();
-        // event.stopImmediatePropagation();
+        event.preventDefault();
+        event.stopPropagation();
       });
       this.setBook(this.Book);
 
@@ -288,5 +366,16 @@ export default {
   watch: {}
 };
 </script>
-<style lang="stylus" scoped></style>
-<style></style>
+<style lang="stylus" scoped>
+.ebook-reader
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    .ebook-reader-mask
+      position: absolute;
+      z-index: 150;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+</style>

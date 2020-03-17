@@ -12,6 +12,7 @@ const state = {
   progress: 0,
   navigation: null,
   cover: "",
-  metadata: null
+  metadata: null,
+  offsetY: 0
 };
 export default state;

@@ -31,7 +31,8 @@ export const bookmixin = {
       "progress",
       "metadata",
       "navigation",
-      "cover"
+      "cover",
+      "offsetY"
     ])
   },
   methods: {
@@ -49,7 +50,8 @@ export const bookmixin = {
       setprogressValue: "SET_RPOGRESS",
       setnavigation: "SET_NAV",
       setmetadata: "SET_METADATA",
-      setcover: "SET_COVER"
+      setcover: "SET_COVER",
+      setOffsetY: "SET_OFFSETY"
     })
 
     // 设置主题方法注册为mixin 因为多处复用

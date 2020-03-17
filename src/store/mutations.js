@@ -42,6 +42,9 @@ const mutations = {
   },
   [types.SET_COVER](state, cover) {
     state.cover = cover;
+  },
+  [types.SET_OFFSETY](state, Y) {
+    state.offsetY = Y;
   }
 };
 export default mutations;

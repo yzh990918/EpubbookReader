@@ -6,8 +6,7 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/",
-    redirect: "/reader"
+    path: "/"
   },
   {
     path: "/reader",
