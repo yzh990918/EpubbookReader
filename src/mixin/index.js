@@ -32,7 +32,8 @@ export const bookmixin = {
       "metadata",
       "navigation",
       "cover",
-      "offsetY"
+      "offsetY",
+      "time"
     ])
   },
   methods: {
@@ -51,7 +52,8 @@ export const bookmixin = {
       setnavigation: "SET_NAV",
       setmetadata: "SET_METADATA",
       setcover: "SET_COVER",
-      setOffsetY: "SET_OFFSETY"
+      setOffsetY: "SET_OFFSETY",
+      settime: "SET_TIME"
     })
 
     // 设置主题方法注册为mixin 因为多处复用

@@ -81,7 +81,7 @@ export default {
       saveProgress(this.fileName, value);
       saveLocation(this.fileName, cfi);
       let currentsection = this.CurrentBook.rendition.currentLocation();
-      console.log(currentsection);
+      this.setprogressValue(value / 100);
 
       // 获取当前章节数
       this.setsection(currentsection.start.index);
@@ -131,6 +131,7 @@ export default {
       const location = Currentlocation.start.cfi;
       saveLocation(this.fileName, location);
       saveProgress(this.fileName, parseInt(progress * 100));
+      this.setprogressValue(parseInt(progress * 100));
     }
   },
 

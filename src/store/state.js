@@ -13,6 +13,7 @@ const state = {
   navigation: null,
   cover: "",
   metadata: null,
-  offsetY: 0
+  offsetY: 0,
+  time: 0
 };
 export default state;

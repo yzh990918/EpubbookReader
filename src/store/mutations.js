@@ -45,6 +45,9 @@ const mutations = {
   },
   [types.SET_OFFSETY](state, Y) {
     state.offsetY = Y;
+  },
+  [types.SET_TIME](state, t) {
+    state.time = t;
   }
 };
 export default mutations;

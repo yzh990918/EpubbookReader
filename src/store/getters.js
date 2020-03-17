@@ -17,4 +17,4 @@ export const paginate = state => state.paginate;
 export const pagelist = state => state.pagelist;
 export const offsetY = state => state.offsetY;
 export const isBookmark = state => state.isBookmark;
-export const speakingIconBottom = state => state.speakingIconBottom;
+export const time = state => state.time;

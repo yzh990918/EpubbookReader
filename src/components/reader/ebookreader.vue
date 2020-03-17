@@ -15,7 +15,7 @@
 
 <script>
 import { bookmixin } from "../../mixin/index";
-import { saveLocation, saveProgress } from "../../mixin/storage";
+import { saveLocation, saveProgress, getReadTime } from "../../mixin/storage";
 import {
   getFontFamily,
   getFontSize,
@@ -52,7 +52,7 @@ export default {
   mounted() {
     this.initEpub();
     Toast.loading({
-      message: "记载中...",
+      message: "下载图书中...",
       forbidClick: true,
       loadingType: "spinner",
       duration: 1000000
@@ -253,6 +253,12 @@ export default {
           this.setcover(url);
         });
       });
+      this.book.loaded.metadata.then(meta => {
+        this.setmetadata(meta);
+        console.log(meta);
+      });
+      let timer = getReadTime(this.fileName);
+      this.settime(timer);
     },
     initEpub() {
       this.setFileName(this.$route.params.fileName);

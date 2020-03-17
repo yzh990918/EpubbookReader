@@ -29,11 +29,13 @@
           <img :src="cover" width="60px" height="80px" />
         </div>
         <div class="right">
-          <div class="filename">{{ fileName }}</div>
+          <div class="filename">
+            {{ metadata ? metadata.title : "好书" }}
+          </div>
           <div class="read-info">
-            <span>已读{{ progressValue }}% </span>
+            <span>已读{{ progress * 100 }}% </span>
 
-            <span> {{ retime }}分钟</span>
+            <span> ,您已经读了{{ Math.ceil(time / 60) }}分钟</span>
           </div>
         </div>
       </div>
@@ -68,12 +70,7 @@ import { bookmixin } from "../../mixin/index";
 import settingFont from "../reader/ebooksetFont";
 import settingBg from "../reader/ebooksetBg";
 import settingProgress from "../reader/ebooksetPg";
-import {
-  getReadTime,
-  getProgress,
-  saveLocation,
-  saveProgress
-} from "../../mixin/storage";
+import { getProgress, saveLocation, saveProgress } from "../../mixin/storage";
 import { Popup } from "vant";
 import scroll from "./scroll";
 export default {
@@ -103,10 +100,6 @@ export default {
       } else {
         return "night";
       }
-    },
-    retime() {
-      let time = getReadTime(this.fileName);
-      return Math.ceil(time / 60);
     },
     progressValue() {
       return getProgress(this.fileName);

@@ -13,3 +13,4 @@ export const SET_METADATA = "SET_METADATA";
 export const SET_NAV = "SET_NAV";
 export const SET_COVER = "SET_COVER";
 export const SET_OFFSETY = "SET_OFFSETY";
+export const SET_TIME = "SET_TIME";
