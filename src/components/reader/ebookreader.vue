@@ -15,6 +15,7 @@
 
 <script>
 import { bookmixin } from "../../mixin/index";
+import { saveLocation, saveProgress } from "../../mixin/storage";
 import {
   getFontFamily,
   getFontSize,
@@ -50,6 +51,12 @@ export default {
 
   mounted() {
     this.initEpub();
+    Toast.loading({
+      message: "记载中...",
+      forbidClick: true,
+      loadingType: "spinner",
+      duration: 1000000
+    });
   },
 
   methods: {
@@ -214,14 +221,7 @@ export default {
       const currentLocation = getLocation(this.fileName);
       this.redition.display(currentLocation);
     },
-    //加载图书信息
-    initBookInfo() {
-      // 封面
-      this.book.loaded.cover.then(cover => {
-        this.book.archive.createUrl(cover).then(url => {
-          this.setcover(url);
-        });
-      });
+    initnav() {
       // 章节信息
       this.book.loaded.navigation.then(nav => {
         //  定义拆解目录算法 得到一维数组目录
@@ -239,6 +239,19 @@ export default {
           item.level = find(item);
         });
         this.setnavigation(navItem);
+        console.log(navItem);
+        if (this.navigation !== null && this.navigation.length) {
+          Toast.clear();
+        }
+      });
+    },
+    //加载图书信息
+    initBookInfo() {
+      // 封面
+      this.book.loaded.cover.then(cover => {
+        this.book.archive.createUrl(cover).then(url => {
+          this.setcover(url);
+        });
       });
     },
     initEpub() {
@@ -248,28 +261,27 @@ export default {
       this.book = new Epub(BookUrl);
       this.Book = this.book;
       console.log(this.book.isOpen);
-
+      this.initnav();
+      this.initBookInfo();
       // 渲染图书文件
       this.redition = this.book.renderTo("read", {
         width: innerWidth,
         height: innerHeight,
         method: "default"
       });
-      Toast.loading({
-        message: "记载中...",
-        forbidClick: true,
-        loadingType: "spinner"
-      });
+
       // 加载图书 显示到屏幕
-      this.redition.display().then(() => {
-        // 初始化storage
-        this.loadingFontsize();
-        this.loadingFontfamily();
-        this.initTheme();
-        this.initGlobaltheme();
-        this.initLocation();
-        this.initBookInfo();
-      });
+      this.redition
+        .display()
+        .then(() => {
+          // 初始化storage
+          this.loadingFontsize();
+          this.loadingFontfamily();
+          this.initTheme();
+          this.initGlobaltheme();
+          this.initLocation();
+        })
+        .then(() => {});
 
       // 定义翻页动作
       // 获取到手指滑动的时间 和偏移
@@ -311,7 +323,14 @@ export default {
         })
         .then(() => {
           this.setProgressFinished(true);
-          Toast.clear();
+
+          const Currentlocation = this.CurrentBook.rendition.currentLocation();
+          const progress = this.CurrentBook.locations.percentageFromCfi(
+            Currentlocation.start.cfi
+          );
+          const location = Currentlocation.start.cfi;
+          saveLocation(this.fileName, location);
+          saveProgress(this.fileName, parseInt(progress * 100));
         })
         .then(() => {
           setTimeout(() => {
@@ -368,14 +387,14 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .ebook-reader
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    .ebook-reader-mask
-      position: absolute;
-      z-index: 150;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
+  width: 100%
+  height: 100%
+  overflow: hidden
+  .ebook-reader-mask
+    position: absolute
+    z-index: 150
+    top: 0
+    left: 0
+    width: 100%
+    height: 100%
 </style>
