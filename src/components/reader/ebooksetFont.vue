@@ -210,18 +210,19 @@ export default {
       align-items: center
 </style>
 
-<style>
+<style scoped>
 .van-slider__button {
   background: #5f5f56;
 }
 .van-popup {
   max-height: 350px;
+  width: 100% !important;
   overflow: scroll;
 }
 .van-popup,
 .van-cell-group,
 .van-cell {
-  background: #f5eacc !important;
+  background: #f5eacc;
 }
 .van-icon {
   color: antiquewhite;
@@ -247,7 +248,7 @@ export default {
   outline: none;
   font-size: 13px;
   display: flex;
-  justify-items: center;
+  justify-content: center;
   width: 60px;
   height: 23px;
   margin-right: 20px;

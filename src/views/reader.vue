@@ -8,7 +8,10 @@
 <script>
 import bookReader from "../components/reader/ebookreader";
 import bookMenu from "../components/reader/ebookmenu";
+import { getReadTime, saveReadTime } from "../mixin/storage";
+import { bookmixin } from "../mixin/index";
 export default {
+  mixins: [bookmixin],
   name: "reader",
   props: [""],
   data() {
@@ -24,9 +27,31 @@ export default {
 
   beforeMount() {},
 
-  mounted() {},
+  mounted() {
+    this.catchReadtime();
+  },
+  beforeDestroy() {
+    // 在组件销毁前 清理定时任务
+    if (this.task) {
+      clearInterval(this.task);
+    }
+  },
 
-  methods: {},
+  methods: {
+    catchReadtime() {
+      let readtime = getReadTime(this.fileName);
+      if (!readtime) {
+        readtime = 0;
+      }
+      this.task = setInterval(() => {
+        if (readtime % 30 === 0) {
+          saveReadTime(this.fileName, readtime);
+        }
+        readtime++;
+      }, 1000);
+      // 每隔半分钟记录一次时间 写入storage
+    }
+  },
 
   watch: {}
 };

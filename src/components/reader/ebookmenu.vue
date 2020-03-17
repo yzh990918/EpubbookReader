@@ -23,6 +23,43 @@
     <settingFont></settingFont>
     <settingBg></settingBg>
     <settingProgress></settingProgress>
+    <Popup closeable :class="backgroundStyle" v-model="show" position="left">
+      <div class="top">
+        <div class="left">
+          <img :src="cover" width="60px" height="80px" />
+        </div>
+        <div class="right">
+          <div class="filename">{{ fileName }}</div>
+          <div class="read-info">
+            <span>已读{{ progressValue }}% </span>
+
+            <span> {{ retime }}分钟</span>
+          </div>
+        </div>
+      </div>
+      <div class="content">
+        <scroll
+          class="slide-contents-list"
+          :top="186"
+          :bottom="10"
+          ref="scroll"
+        >
+          <div
+            class="slide-contents-item"
+            v-for="(item, index) in navigation"
+            :key="index"
+            @click="display(item.href)"
+          >
+            <span
+              class="slide-contents-item-label"
+              :class="{ selected: section === index }"
+              :style="navCls(item)"
+              >{{ item.label.trim() }}</span
+            >
+          </div>
+        </scroll>
+      </div>
+    </Popup>
   </div>
 </template>
 
@@ -31,6 +68,14 @@ import { bookmixin } from "../../mixin/index";
 import settingFont from "../reader/ebooksetFont";
 import settingBg from "../reader/ebooksetBg";
 import settingProgress from "../reader/ebooksetPg";
+import {
+  getReadTime,
+  getProgress,
+  saveLocation,
+  saveProgress
+} from "../../mixin/storage";
+import { Popup } from "vant";
+import scroll from "./scroll";
 export default {
   mixins: [bookmixin],
   name: "",
@@ -39,22 +84,33 @@ export default {
   },
   data() {
     return {
-      menuFlag: false
+      menuFlag: false,
+      show: false
     };
   },
 
-  components: { settingFont, settingBg, settingProgress },
+  components: { settingFont, settingBg, settingProgress, Popup, scroll },
   created() {},
 
   computed: {
-    // todo:1.控制面板的显示与隐藏 2.设置显示字号设置时面板阴影消失 3.点击隐藏时设置num为-1  4.混入minx使用vuex 5.this.book写入vuex中 6.填写fontsize数组 ,实现字号更换功能，默认字体大小写入vuex 7 .更改vuex默认字号 8.添加设置字体的wrapper 占三分之一份,定义vuex字体值 8。定义弹出层 书写样式 添加动画 9.添加点击事件 更改字体，翻页时隐藏面板
-    // (this.currentBook.rendition.themes.fontSize() this.currnetBook.rendition.themes.font())
-    // 更换字体时需要使用钩子函数
-    // todo: 书写样式代码 定义themList方法返回them数组 1.定义vuex theme 点击事件设置当前vuex theme 删除border 和设置item.name匹配选中项
-    // 注册 initTheme(){this.themelist.forEach((theme)=>{this.rendition.themes.register(theme.name,theme.style)})}
-    // 设置默认样式 this.rendition.themes.select(defaulttheme)
-    // 设置主题方法: 点击事件异步调用select() 选中时preview设置一个阴影  保存storage 全局引如css文件到head 动态主题切换（switch case 实现） 点击事件设置全局主题  书写清除css文件方法
-    // todo:  总结:1.完成了电子书的翻页(通过监听touchstart touchend事件) 2.完成了电子书面板样式代码和基本逻辑 3.完成了电子书的字号 字体设置 这里主要使用到了this.rendition的方法 4.主题更改 5.进度更改 6.目录显示与跳转 8.书签 9.完善 缓存处理
+    backgroundStyle() {
+      if (this.defaultTheme === "Default") {
+        return "default";
+      } else if (this.defaultTheme === "Gold") {
+        return "gold";
+      } else if (this.defaultTheme === "Eye") {
+        return "eye";
+      } else {
+        return "night";
+      }
+    },
+    retime() {
+      let time = getReadTime(this.fileName);
+      return Math.ceil(time / 60);
+    },
+    progressValue() {
+      return getProgress(this.fileName);
+    }
   },
 
   beforeMount() {},
@@ -64,6 +120,31 @@ export default {
   methods: {
     showSetting(key) {
       this.setSelectNum(key);
+      if (key === 0) {
+        this.show = true;
+      }
+    },
+    display(item) {
+      this.CurrentBook.rendition.display(item);
+      // 获取当前位置对象
+      const Currentlocation = this.CurrentBook.rendition.currentLocation();
+      // 保存当前的选中的章节号
+      if (Currentlocation && Currentlocation.start.index) {
+        this.setsection(Currentlocation.start.index);
+      }
+      const progress = this.CurrentBook.locations.percentageFromCfi(
+        Currentlocation.start.cfi
+      );
+      // 保存阅读进度  应该精确到页的内容
+      const location = Currentlocation.start.cfi;
+      saveLocation(this.fileName, location);
+      saveProgress(this.fileName, parseInt(progress * 100));
+    },
+    // 多级目录分级
+    navCls(item) {
+      return {
+        marginLeft: `${item.level * 20}px`
+      };
     }
   },
 
@@ -83,7 +164,7 @@ export default {
   width: 100%;
   height: 1.8rem;
   background: #F5EACC;
-  box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, 0.15);
+  box-shadow: 0 px2rem(-8) px2rem(8) rgba(0, 0, 0, 0.15)
   &.slideUp-enter,&.slideUp-leave-active
     transform translate3d(0,100%,0)
     opacity 0
@@ -104,4 +185,72 @@ export default {
       font-size  0.6rem
     .icon-a
         font-size 0.5rem
+>>> .van-popup
+      width: 85%
+      height: 100%
+      &.default
+        background #F5EACC
+      &.gold
+        background #c6c2b6
+      &.night
+        background #000000
+      &.eye
+        background #a9c1a9
+</style>
+<style lang="stylus" scoped>
+.top
+  display flex
+  position relative
+  top 30px
+  padding 0 20px 15px 10px
+  border-bottom 1px solid #b8b9bb
+  .left
+    display inline-block
+    vertical-align middle
+    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
+    height 60px
+    height 80px
+    flex 0 0 60px
+  .right
+    display flex
+    flex 1
+    flex-direction column
+    justify-content center
+    margin-left 10px
+    .filename
+      font-size 16px
+      font-weight 500
+      max-width 80%
+      line-height 20px
+      margin-bottom 9px
+      color #4C5059
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
+    .read-info
+      color #666
+      font-size 13px
+      line-height 16px
+.content
+  .slide-contents-list
+    padding: 0 15px;
+    box-sizing: border-box;
+    .slide-contents-item
+      display: flex;
+      padding: 20px 0;
+      box-sizing: border-box;
+      .slide-contents-item-label
+        flex: 1;
+        font-size: 14px;
+        line-height: 16px;
+        overflow hidden
+        text-overflow ellipsis
+        white-space nowrap
+</style>
+<style scoped>
+.scroll-wrapper,
+.slide-contents-list {
+  height: 650px !important;
+  margin-top: 30px !important;
+}
 </style>

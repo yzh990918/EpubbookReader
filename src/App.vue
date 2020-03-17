@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="app" :class="backgroundStyle">
     <router-view />
   </div>
 </template>
@@ -11,7 +11,23 @@ document.addEventListener("DOMContentLoaded", () => {
   fontsize = fontsize > 50 ? 50 : fontsize;
   html.style.fontSize = fontsize + "px";
 });
-export default {};
+import { bookmixin } from "./mixin/index";
+export default {
+  mixins: [bookmixin],
+  computed: {
+    backgroundStyle() {
+      if (this.defaultTheme === "Default") {
+        return "default";
+      } else if (this.defaultTheme === "Gold") {
+        return "gold";
+      } else if (this.defaultTheme === "Eye") {
+        return "eye";
+      } else {
+        return "night";
+      }
+    }
+  }
+};
 </script>
 
 <style lang="stylus">
@@ -23,5 +39,12 @@ export default {};
   bottom 0
   right 0
   z-index 0
-  background #F5EACC
+  &.default
+    background #F5EACC
+  &.gold
+    background #c6c2b6
+  &.night
+    background #000000
+  &.eye
+    background #a9c1a9
 </style>

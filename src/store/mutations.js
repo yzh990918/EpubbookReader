@@ -27,6 +27,21 @@ const mutations = {
   },
   [types.SET_BOOKFIN](state, flag) {
     state.bookAvailable = flag;
+  },
+  [types.SET_SECTION](state, section) {
+    state.section = section;
+  },
+  [types.SET_RPOGRESS](state, progress) {
+    state.progress = progress;
+  },
+  [types.SET_METADATA](state, data) {
+    state.metadata = data;
+  },
+  [types.SET_NAV](state, nav) {
+    state.navigation = nav;
+  },
+  [types.SET_COVER](state, cover) {
+    state.cover = cover;
   }
 };
 export default mutations;

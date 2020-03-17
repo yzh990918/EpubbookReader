@@ -110,3 +110,8 @@ export function removeAllCss() {
   removeCss("https://store.yangxiansheng.top/theme/theme_gold.css");
   removeCss("https://store.yangxiansheng.top/theme/theme_night.css");
 }
+
+export function realPx(px) {
+  const maxWidth = window.innerWidth > 500 ? 500 : window.innerWidth;
+  return px * (maxWidth / 375);
+}

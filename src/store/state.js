@@ -7,6 +7,11 @@ const state = {
   defaultFontFamily: "Default",
   fontFamilyVisible: false,
   defaultTheme: "Default",
-  bookAvailable: false
+  bookAvailable: false,
+  section: 0,
+  progress: 0,
+  navigation: null,
+  cover: "",
+  metadata: null
 };
 export default state;

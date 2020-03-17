@@ -4,8 +4,9 @@ import router from "./router";
 import store from "./store";
 import "./assets/styles/icon.css";
 import "./assets/styles/global.styl";
-import { Icon } from "vant";
+import { Icon, Toast } from "vant";
 Vue.use(Icon);
+Vue.use(Toast);
 Vue.config.productionTip = false;
 
 new Vue({

@@ -4,10 +4,10 @@
       <div class="setting-wrapper" v-show="menuVisable && selectedNum === 1">
         <div class="setting-theme">
           <div class="read-time">
-            <span style="margin-top:10px;">阅读时间:3小时</span>
+            <span style="margin-top:10px;">书籍是人类进步的阶梯</span>
           </div>
           <div class="slide-wrapper">
-            <div class="text"><span>上一章</span></div>
+            <div class="text" @click="prevePage()"><span>上一章</span></div>
             <div class="wrapper">
               <Slider
                 bar-height="4px"
@@ -19,10 +19,10 @@
               ></Slider>
             </div>
 
-            <div class="text"><span>下一章</span></div>
+            <div class="text" @click="nextPage()"><span>下一章</span></div>
           </div>
           <div class="book-progress">
-            <span>第一章 废材的逆袭({{ precent }}%)</span>
+            <span>{{ sectionText }}({{ value }}%)</span>
           </div>
         </div>
       </div>
@@ -33,34 +33,105 @@
 <script>
 import { Slider } from "vant";
 import { bookmixin } from "../../mixin/index";
+import { saveLocation, saveProgress, getProgress } from "../../mixin/storage";
 export default {
   mixins: [bookmixin],
   name: "",
   props: [""],
   data() {
     return {
-      value: 0,
-      precent: 0
+      precent: 0,
+      value: 0
     };
   },
 
   components: { Slider },
   created() {},
 
-  computed: {},
+  computed: {
+    sectionText() {
+      if (this.section) {
+        let sectionInfo = this.CurrentBook.section(this.section);
+        if (
+          sectionInfo &&
+          sectionInfo.href &&
+          this.CurrentBook &&
+          this.CurrentBook.navigation
+        ) {
+          return this.CurrentBook.navigation.get(sectionInfo.href).label;
+        }
+      }
+
+      return this.fileName;
+    }
+  },
 
   beforeMount() {},
 
-  mounted() {},
+  mounted() {
+    this.value = getProgress(this.fileName);
+  },
 
   methods: {
     onChange(value) {
       // 拿到value/100 百分比，然后通过CfiFromPrecentage(precent)获取当前的内容
       const cfi = this.CurrentBook.locations.cfiFromPercentage(value / 100);
       this.CurrentBook.rendition.display(cfi);
-      this.precent = value;
-    }
+      // 保存进度给progress
+      saveProgress(this.fileName, value);
+      saveLocation(this.fileName, cfi);
+      let currentsection = this.CurrentBook.rendition.currentLocation();
+      console.log(currentsection);
+
+      // 获取当前章节数
+      this.setsection(currentsection.start.index);
+    },
     // todo: 阅读器章节读取 上一章下一章 阅读时间 目录 选择目录 目录信息等
+    prevePage() {
+      if (this.bookAvailable && this.section > 0) {
+        console.log("click");
+        let section = this.section - 1;
+        this.setsection(section);
+
+        // 拿到章节信息 里面的href就是跳转的内容 显示章节内容
+        const sectionInfo = this.CurrentBook.section(section);
+        if (section && sectionInfo.href) {
+          this.CurrentBook.rendition.display(sectionInfo.href).then(() => {
+            this.refreshSection();
+          });
+        }
+      }
+    },
+    nextPage() {
+      if (
+        this.bookAvailable &&
+        this.section < this.CurrentBook.spine.length - 1
+      ) {
+        console.log("click");
+        let section = this.section + 1;
+        this.setsection(section);
+        const sectionInfo = this.CurrentBook.section(section);
+        if (section && sectionInfo.href) {
+          this.CurrentBook.rendition.display(sectionInfo.href).then(() => {
+            this.refreshSection();
+          });
+        }
+      }
+    },
+    refreshSection() {
+      // 获取到当前进度的位置信息 通过rendition.currentLoaction获取
+      const Currentlocation = this.CurrentBook.rendition.currentLocation();
+      // console.log(Currentlocation);
+      // 根据 cfi获取进度百分比
+      const progress = this.CurrentBook.locations.percentageFromCfi(
+        Currentlocation.start.cfi
+      );
+      this.value = parseInt(progress * 100);
+      // 保存阅读进度  应该精确到页的内容
+      const location = Currentlocation.start.cfi;
+      saveLocation(this.fileName, location);
+      saveProgress(this.fileName, parseInt(progress * 100));
+    }
   },
 
   watch: {}
@@ -117,6 +188,12 @@ export default {
       display flex
       justify-content center
       align-content center
+      span
+        overflow hidden
+        display inline-block
+        max-width 80%
+        text-overflow ellipsis
+        white-space nowrap
 </style>
 <style>
 .van-slider__button {

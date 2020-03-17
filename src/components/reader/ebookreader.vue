@@ -12,11 +12,14 @@ import {
   saveFontFamily,
   saveFontSize,
   getTheme,
-  saveTheme
+  saveTheme,
+  getLocation
 } from "../../mixin/storage";
 import Epub from "epubjs";
 import { themeList, addLink, removeAllCss } from "../../mixin/book";
 global.ePub = Epub;
+import { Toast } from "vant";
+import { Dialog } from "vant";
 export default {
   mixins: [bookmixin],
   name: "",
@@ -24,7 +27,8 @@ export default {
   data() {
     return {
       Bookfilename: "",
-      Book: {}
+      Book: {},
+      show: false
     };
   },
 
@@ -129,12 +133,45 @@ export default {
           break;
       }
     },
+    // 加载上次阅读位置
+    initLocation() {
+      const currentLocation = getLocation(this.fileName);
+      this.redition.display(currentLocation);
+    },
+    //加载图书信息
+    initBookInfo() {
+      // 封面
+      this.book.loaded.cover.then(cover => {
+        this.book.archive.createUrl(cover).then(url => {
+          this.setcover(url);
+        });
+      });
+      // 章节信息
+      this.book.loaded.navigation.then(nav => {
+        //  定义拆解目录算法 得到一维数组目录
+        const navItem = (function flatten(arr) {
+          return [].concat(
+            ...arr.map(item => [item, ...flatten(item.subitems)])
+          );
+        })(nav.toc);
+        //查找父级目录item
+        function find(item, v = 0) {
+          const parent = navItem.filter(it => it.id === item.parent)[0];
+          return !item.parent ? v : parent ? find(parent, ++v) : v;
+        }
+        navItem.forEach(item => {
+          item.level = find(item);
+        });
+        this.setnavigation(navItem);
+      });
+    },
     initEpub() {
       this.setFileName(this.$route.params.fileName);
       const url = "https://store.yangxiansheng.top/epub/";
       let BookUrl = url + `${this.$route.params.fileName}.epub`;
       this.book = new Epub(BookUrl);
       this.Book = this.book;
+      console.log(this.book.isOpen);
 
       // 渲染图书文件
       this.redition = this.book.renderTo("read", {
@@ -142,7 +179,11 @@ export default {
         height: innerHeight,
         method: "default"
       });
-
+      Toast.loading({
+        message: "记载中...",
+        forbidClick: true,
+        loadingType: "spinner"
+      });
       // 加载图书 显示到屏幕
       this.redition.display().then(() => {
         // 初始化storage
@@ -150,6 +191,8 @@ export default {
         this.loadingFontfamily();
         this.initTheme();
         this.initGlobaltheme();
+        this.initLocation();
+        this.initBookInfo();
       });
 
       // 定义翻页动作
@@ -190,6 +233,17 @@ export default {
         })
         .then(() => {
           this.setProgressFinished(true);
+          Toast.clear();
+        })
+        .then(() => {
+          setTimeout(() => {
+            if (this.book.isOpen === false) {
+              Dialog.alert({
+                message: "正在努力添加中",
+                title: "库存不足"
+              });
+            }
+          }, 50);
         });
 
       //注册字体文件
@@ -235,3 +289,4 @@ export default {
 };
 </script>
 <style lang="stylus" scoped></style>
+<style></style>

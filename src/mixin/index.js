@@ -26,7 +26,12 @@ export const bookmixin = {
       "defaultFontFamily",
       "fontFamilyVisible",
       "defaultTheme",
-      "bookAvailable"
+      "bookAvailable",
+      "section",
+      "progress",
+      "metadata",
+      "navigation",
+      "cover"
     ])
   },
   methods: {
@@ -39,7 +44,12 @@ export const bookmixin = {
       setfontfamily: "SET_DEFAULTFONTFAMILY",
       setfamilyVisible: "FAMILY_VISIBLE",
       settheme: "SET_THEME",
-      setProgressFinished: "SET_BOOKFIN"
+      setProgressFinished: "SET_BOOKFIN",
+      setsection: "SET_SECTION",
+      setprogressValue: "SET_RPOGRESS",
+      setnavigation: "SET_NAV",
+      setmetadata: "SET_METADATA",
+      setcover: "SET_COVER"
     })
 
     // 设置主题方法注册为mixin 因为多处复用

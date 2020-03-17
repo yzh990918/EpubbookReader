@@ -57,6 +57,14 @@ export function saveLocation(fileName, location) {
   setBookObject(fileName, "location", location);
 }
 
+// export function getProgress(fileName) {
+//   return getBookObject(fileName, "progress");
+// }
+
+// export function saveprogress(fileName, location) {
+//   setBookObject(fileName, "progress", location);
+// }
+
 // export function getBookmark(fileName) {
 //   return getBookObject(fileName, "bookmark");
 // }
