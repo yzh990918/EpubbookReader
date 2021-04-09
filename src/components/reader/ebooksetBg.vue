@@ -62,20 +62,20 @@ export default {
       removeAllCss();
       switch (this.defaultTheme) {
         case "Default":
-          addLink(`https://store.yangxiansheng.top/theme/theme_default.css`);
+          addLink(`http://106.15.231.180/theme/theme_default.css`);
           break;
         case "Eye":
-          addLink(`https://store.yangxiansheng.top/theme/theme_eye.css`);
+          addLink(`http://106.15.231.180/theme/theme_eye.css`);
           break;
         case "Gold":
-          addLink(`https://store.yangxiansheng.top/theme/theme_gold.css`);
+          addLink(`http://106.15.231.180/theme/theme_gold.css`);
           break;
         case "Night":
-          addLink(`https://store.yangxiansheng.top/theme/theme_night.css`);
+          addLink(`http://106.15.231.180/theme/theme_night.css`);
           break;
         default:
           this.saveTheme(this.defaultTheme);
-          addLink(`https://store.yangxiansheng.top/theme/theme_default.css`);
+          addLink(`http://106.15.231.180/theme/theme_default.css`);
           break;
       }
     }

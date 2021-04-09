@@ -262,7 +262,7 @@ export default {
     },
     initEpub() {
       this.setFileName(this.$route.params.fileName);
-      const url = "https://store.yangxiansheng.top/epub/";
+      const url = "http://localhost/epubSrc/";
       let BookUrl = url + `${this.$route.params.fileName}.epub`;
       this.book = new Epub(BookUrl);
       this.Book = this.book;
@@ -357,7 +357,7 @@ export default {
             "http://106.15.231.180/fonts/cabin.css"
           ),
            contents.addStylesheet(
-            "http://106.15.231.180/fonts/dayOne.css"
+            "http://106.15.231.180/fonts/daysOne.css"
           ),
           contents.addStylesheet(
             "http://106.15.231.180/fonts/montserrat.css"
@@ -391,4 +391,8 @@ export default {
     left: 0
     width: 100%
     height: 100%
+</style>
+<style lang="stylus">
+.van-button__text
+  margin-top 0 !important
 </style>
