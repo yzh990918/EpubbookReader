@@ -199,20 +199,20 @@ export default {
       removeAllCss();
       switch (this.defaultTheme) {
         case "Default":
-          addLink(`https://store.yangxiansheng.top/theme/theme_default.css`);
+          addLink(`http://106.15.231.180/theme/theme_default.css`);
           break;
         case "Eye":
-          addLink(`https://store.yangxiansheng.top/theme/theme_eye.css`);
+          addLink(`http://106.15.231.180/theme/theme_eye.css`);
           break;
         case "Gold":
-          addLink(`https://store.yangxiansheng.top/theme/theme_gold.css`);
+          addLink(`http://106.15.231.180/theme/theme_gold.css`);
           break;
         case "Night":
-          addLink(`https://store.yangxiansheng.top/theme/theme_night.css`);
+          addLink(`http://106.15.231.180/theme/theme_night.css`);
           break;
         default:
           this.saveTheme(this.defaultTheme);
-          addLink(`https://store.yangxiansheng.top/theme/theme_default.css`);
+          addLink(`http://106.15.231.180/theme/theme_default.css`);
           break;
       }
     },
@@ -354,28 +354,16 @@ export default {
         // 异步加载全部字体文件
         Promise.all([
           contents.addStylesheet(
-            "https://store.yangxiansheng.top/font/font1.css"
+            "http://106.15.231.180/fonts/cabin.css"
+          ),
+           contents.addStylesheet(
+            "http://106.15.231.180/fonts/dayOne.css"
           ),
           contents.addStylesheet(
-            "https://store.yangxiansheng.top/font/font2.css"
+            "http://106.15.231.180/fonts/montserrat.css"
           ),
           contents.addStylesheet(
-            "https://store.yangxiansheng.top/font/font3.css"
-          ),
-          contents.addStylesheet(
-            "https://store.yangxiansheng.top/font/font4.css"
-          ),
-          contents.addStylesheet(
-            "https://store.yangxiansheng.top/font/font5.css"
-          ),
-          contents.addStylesheet(
-            "https://store.yangxiansheng.top/font/cabin.css"
-          ),
-          contents.addStylesheet(
-            "https://store.yangxiansheng.top/font/montserrat.css"
-          ),
-          contents.addStylesheet(
-            "https://store.yangxiansheng.top/font/tangerine.css"
+            "http://106.15.231.180/fonts/tangerine.css"
           )
         ]).then(() => {
           if (!getFontFamily(this.fileName)) {
